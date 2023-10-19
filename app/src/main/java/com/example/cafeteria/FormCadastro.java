@@ -3,6 +3,7 @@ package com.example.cafeteria;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -57,6 +58,7 @@ public class FormCadastro extends AppCompatActivity {
                     mostrarMensagem(v, mensagens[0]);
                 } else {
                     cadastrarUsuario(v);
+
                 }
             }
         });
@@ -72,6 +74,7 @@ public class FormCadastro extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     salvarDadosUsuario();
                     mostrarMensagem(v, mensagens[1]);
+                    telaMinhaConta();
                 } else {
                     String erro;
                     try {
@@ -89,6 +92,12 @@ public class FormCadastro extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void telaMinhaConta() {
+        Intent intent = new Intent(FormCadastro.this, MinhaConta.class);
+        startActivity(intent);
+        finish();
     }
 
     private void mostrarMensagem(View v, String msg) {
