@@ -18,6 +18,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 
 public class FormLogin extends AppCompatActivity {
 
@@ -54,13 +57,13 @@ public class FormLogin extends AppCompatActivity {
                 if (email.isEmpty() || senha.isEmpty()) {
                     mostrarMensagem(v, mensagens[0]);
                 } else {
-                    autenticarUsuario();
+                    autenticarUsuario(v);
                 }
             }
         });
     }
 
-    private void autenticarUsuario() {
+    private void autenticarUsuario(View v) {
         String email = edit_email.getText().toString();
         String senha = edit_senha.getText().toString();
 
@@ -77,6 +80,18 @@ public class FormLogin extends AppCompatActivity {
                             telaMinhaConta();
                         }
                     }, 3000);
+                } else {
+                    String erro;
+                    try {
+                        throw task.getException();
+                    } catch (FirebaseAuthWeakPasswordException e) {
+                        erro = "Digite uma senha com no mínimo 6 caracteres";
+                    } catch (FirebaseAuthInvalidCredentialsException e) {
+                        erro = "E-mail inválido";
+                    } catch (Exception e) {
+                        erro = "Login e/ou senha inválidos";
+                    }
+                    mostrarMensagem(v, erro);
                 }
             }
         });
