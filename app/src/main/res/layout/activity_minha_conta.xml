@@ -40,7 +40,7 @@
         android:id="@+id/textNomeUsuario"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Fulano de Fulano"
+        android:text=""
         android:textColor="@color/black"
         android:textSize="20sp"
         android:layout_marginTop="30dp"
@@ -62,7 +62,7 @@
         android:id="@+id/textEmailUsuario"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="fulano@gmail.com"
+        android:text=""
         android:textColor="@color/black"
         android:textSize="20sp"
         android:layout_marginTop="40dp"
@@ -97,7 +97,7 @@
         android:id="@+id/textPhoneUsuario"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="1122222222"
+        android:text=""
         android:textColor="@color/black"
         android:textSize="20sp"
         android:layout_marginTop="30dp"
@@ -119,7 +119,7 @@
         android:id="@+id/textDataUsuario"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="01/01/2000"
+        android:text=""
         android:textColor="@color/black"
         android:textSize="20sp"
         android:layout_marginTop="40dp"
@@ -128,6 +128,7 @@
         app:layout_constraintStart_toEndOf="@id/iconePhone" />
 
     <Button
+        android:id="@+id/bt_deslogar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Deslogar"
