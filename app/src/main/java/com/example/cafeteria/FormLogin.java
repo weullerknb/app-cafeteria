@@ -21,6 +21,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
+import com.google.firebase.auth.FirebaseUser;
 
 public class FormLogin extends AppCompatActivity {
 
@@ -95,6 +96,17 @@ public class FormLogin extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        FirebaseUser usuarioAtual = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (usuarioAtual != null) {
+            telaMinhaConta();
+        }
     }
 
     private void telaMinhaConta() {
