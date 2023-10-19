@@ -5,12 +5,15 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthResult;
@@ -18,12 +21,18 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class FormCadastro extends AppCompatActivity {
 
     private EditText edit_nome,edit_nascimento, edit_cpf, edit_telefone, edit_email, edit_senha;
     private Button bt_cadastrar;
     private String[] mensagens = {"Preencha todos os campos", "Cadastro com sucesso"};
+    String usuarioID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +40,7 @@ public class FormCadastro extends AppCompatActivity {
         setContentView(R.layout.activity_form_cadastro);
 
         getSupportActionBar().hide();
-        IniciarComponentes();
+        iniciarComponentes();
 
         bt_cadastrar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,13 +56,13 @@ public class FormCadastro extends AppCompatActivity {
                         telefone.isEmpty() || email.isEmpty() || senha.isEmpty()) {
                     mostrarMensagem(v, mensagens[0]);
                 } else {
-                    CadastrarUsuario(v);
+                    cadastrarUsuario(v);
                 }
             }
         });
     }
 
-    private void CadastrarUsuario(View v) {
+    private void cadastrarUsuario(View v) {
         String email = edit_email.getText().toString();
         String senha = edit_senha.getText().toString();
 
@@ -61,6 +70,7 @@ public class FormCadastro extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
+                    salvarDadosUsuario();
                     mostrarMensagem(v, mensagens[1]);
                 } else {
                     String erro;
@@ -88,7 +98,37 @@ public class FormCadastro extends AppCompatActivity {
         snackbar.show();
     }
 
-    private void IniciarComponentes() {
+    private void salvarDadosUsuario() {
+        String nome = edit_nome.getText().toString();
+        String nascimento = edit_nascimento.getText().toString();
+        String cpf = edit_cpf.getText().toString();
+        String telefone = edit_telefone.getText().toString();
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        Map<String, Object> usuarios = new HashMap<>();
+        usuarios.put("nome", nome);
+        usuarios.put("nascimento", nascimento);
+        usuarios.put("cpf", cpf);
+        usuarios.put("telefone", telefone);
+
+        usuarioID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        DocumentReference documentReference = db.collection("Usuarios").document(usuarioID);
+        documentReference.set(usuarios).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                Log.d("db", "Sucesso ao salvar os dados");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("db_error", "Erro ao salvar os dados" + e.toString());
+            }
+        });
+    }
+
+    private void iniciarComponentes() {
         edit_nome = findViewById(R.id.edit_nome);
         edit_nascimento = findViewById(R.id.edit_nascimento);
         edit_cpf = findViewById(R.id.edit_cpf);
